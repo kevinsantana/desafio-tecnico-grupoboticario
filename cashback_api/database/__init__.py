@@ -2,14 +2,14 @@ import abc
 import functools
 
 import psycopg2
-from loguru import logger
-from psycopg2.extras import DictCursor
 from psycopg2 import OperationalError
+from psycopg2.extras import DictCursor
+from psycopg2.extensions import parse_dsn
 
-from cashback_api.excecoes import CamposObrigatoriosException
-from cashback_api.config import (
-    PGSQL_DB, PGSQL_HOST, PGSQL_PASS, PGSQL_PORT, PGSQL_USR,
-)
+from loguru import logger
+
+from cashback_api.config import envs
+from cashback_api.excecoes import CamposObrigatoriosException, ErrorDetails
 
 
 def campos_obrigatorios(campos):
@@ -21,18 +21,30 @@ def campos_obrigatorios(campos):
     :raises CampoObrigatorioException: Se algum do(s) campo(s) obrigatório(s) não
         for(em) informado(s).
     """
+
     def decorator_campos_obrigatorios(func):
         @functools.wraps(func)
         def wrapper_campos_obrigatorios(self, *args, **kwargs):
             for campo in campos:
                 if self.dict().get(campo) is None:
-                    raise CamposObrigatoriosException(self.__class__.__name__, campo)
+                    raise CamposObrigatoriosException(
+                        status=403,
+                        error="Forbidden",
+                        message="Campo obrigatório não informado",
+                        error_details=[
+                            ErrorDetails(
+                                message=f"{self.__class__.__name__}: {campo} não informado"
+                            ).to_dict()
+                        ],
+                    )
             return func(self, *args, **kwargs)
+
         return wrapper_campos_obrigatorios
+
     return decorator_campos_obrigatorios
 
 
-class DataBase():
+class DataBase:
     """
     Cada tabela do banco de dados é uma classe, em que cada coluna é um atributo
     da classe e os métodos são suas transações (DML ou DDL). Os dados devolvidos
@@ -45,6 +57,7 @@ class DataBase():
     aproveitando da OO não é necessário que as demais classes implemetem as transações
     comuns a todas as tabelas do banco de dados: insert, find_one, find_all.
     """
+
     def __connect(self):
         """
         Efetua a conexão com o banco de dados, os dados de conexão são capturados
@@ -53,11 +66,7 @@ class DataBase():
         """
         while True:
             try:
-                self.__connection = psycopg2.connect(user=PGSQL_USR,
-                                                     password=PGSQL_PASS,
-                                                     host=PGSQL_HOST,
-                                                     port=PGSQL_PORT,
-                                                     database=PGSQL_DB)
+                self.__connection = psycopg2.connect(**parse_dsn(envs.DB_URI))
                 if self.__connection:
                     self.__cursor = self.__connection.cursor(cursor_factory=DictCursor)
                     break

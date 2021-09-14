@@ -20,9 +20,8 @@ run_requirements = [
     "starlette==0.14.2",
     "pytest==6.2.4",
     "sphinx-autobuild==0.7.1",
-    "SQLAlchemy==1.4.20",
-    "cryptography==3.4.8",
     "psycopg2==2.9.1",
+    "bcrypt==3.2.0",
 ]
 
 here = path.abspath(path.dirname(__file__))

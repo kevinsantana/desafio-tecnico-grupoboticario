@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+from cashback_api.excecoes import ErrorDetails
 from cashback_api.models import parse_openapi, Message
 
 
@@ -21,14 +22,28 @@ class CriarRevendedorRequest(BaseModel):
         "seuemail@mail.com", description="Email", min_length=6, max_length=55
     )
     senha: str = Field(
-        "99999-9999",
+        ...,
         description="Senha para acessar o sistema",
         min_length=4,
+        max_length=72,
     )
 
 
 class CriarRevendedorResponse(BaseModel):
-    id_usuario: int
+    data: bool
 
 
-CRIAR_REVENDEDOR_DEFAULT_RESPONSES = parse_openapi([])
+CRIAR_REVENDEDOR_DEFAULT_RESPONSES = parse_openapi(
+    [
+        Message(
+            status=409,
+            error="Conflict",
+            message="Dado repetido",
+            error_details=[
+                ErrorDetails(
+                    message="Os dados informados para o revendedor já existem na base"
+                ).to_dict()
+            ],
+        ),
+    ]
+)

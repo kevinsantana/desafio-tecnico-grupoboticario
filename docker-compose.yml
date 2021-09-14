@@ -1,0 +1,60 @@
+version: "3.5"
+
+services:
+  cashback_api:
+    container_name: cashback_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cashback_api:0.1.0
+    environment: 
+      - SECRET_KEY
+    volumes:
+      - .:/deploy
+    working_dir: /deploy
+    command: >
+        bash -cx "cd docs; make clean; make html; cd .. &&
+        cd cashback_api &&
+        gunicorn --workers=3 --worker-class=uvicorn.workers.UvicornWorker --timeout=174000 --bind=0.0.0.0:7000 'app:start_application()'"
+    ports:
+      - 7000:7000
+    networks:
+      - cashback-network
+    depends_on:
+      - db_cashback
+  
+  db_cashback:
+    container_name: db_cashback
+    image: postgres:12
+    restart: always
+    environment:
+      - POSTGRES_DB=cashback
+      - POSTGRES_PASSWORD=cashback
+      - POSTGRES_USER=cashback
+    ports:
+      - 15432:5432
+    volumes:
+      - vdb_cashback:/var/lib/postgresql/data/
+    networks:
+      - cashback-network
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=cashback@email.com
+      - PGADMIN_DEFAULT_PASSWORD=cashback
+    ports:
+      - 8032:80
+    depends_on:
+      - db_cashback
+    networks:
+      - cashback-network
+
+networks:
+  cashback-network:
+    name: cashback-network
+    driver: bridge
+
+volumes:
+    vdb_cashback:

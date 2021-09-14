@@ -8,7 +8,7 @@ class Revendedor(DataBase):
         nome: str = None,
         cpf: str = None,
         email: str = None,
-        senha: str = None
+        senha: str = None,
     ):
         self.__id_revendedor = id_revendedor
         self.__nome = nome
@@ -70,7 +70,9 @@ class Revendedor(DataBase):
         :return: True se a operação for exeutada com sucesso, False caso contrário.
         :rtype: bool
         """
-        self.query_string = "SELECT COUNT(*) FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
+        self.query_string = (
+            "SELECT COUNT(*) FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
+        )
         if self.__id_revendedor:
             self.query_string += " OR REVENDEDOR.ID_REVENDEDOR = %(id_revendedor)s"
         return True if self.find_one()[0] else False
