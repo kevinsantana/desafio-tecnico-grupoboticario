@@ -83,10 +83,11 @@ class Revendedor(DataBase):
         Busca revendedor no banco de dados a partir do cpf ou id do revendedor.
 
         :param str cpf: CPF do revendedor
-        :return: Id do revendedor
-        :rtype: dict
+        :return: Revendedor
+        :rtype: :class:`database.revendedor.Revendedor` ou None
         """
         self.query_string = "SELECT * FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
         if self.__id_revendedor:
             self.query_string += " OR REVENDEDOR.ID_REVENDEDOR = %(id_revendedor)s"
-        return self.find_one()
+        revendedor = self.find_one()
+        return Revendedor(**dict(revendedor)) if revendedor else None

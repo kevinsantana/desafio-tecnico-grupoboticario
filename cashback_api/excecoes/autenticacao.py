@@ -1,7 +1,7 @@
 from cashback_api.excecoes import CashbackApiException
 
 
-class RevendedorJaExisteException(CashbackApiException):
+class SenhaIncorretaException(CashbackApiException):
     def __init__(
         self,
         status: int,
@@ -16,7 +16,7 @@ class RevendedorJaExisteException(CashbackApiException):
         super().__init__(status, error, message, error_details)
 
 
-class RevendedorNaoExisteException(CashbackApiException):
+class MetodoAutenticacaoNaoSuportado(CashbackApiException):
     def __init__(
         self,
         status: int,

@@ -16,7 +16,7 @@ def hashear_senha(senha_b64: str) -> str:
     )
 
 
-def verificar_hash(hash_b64: str, senha_b64) -> bool:
+def verificar_hash(hash_b64: str, senha_b64: str) -> bool:
     """
     Verifica se a senha informada é igual ao hash da senha. A senha e o hash precisam
     estar codificados em base64.

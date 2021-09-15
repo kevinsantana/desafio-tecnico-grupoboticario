@@ -22,6 +22,7 @@ run_requirements = [
     "sphinx-autobuild==0.7.1",
     "psycopg2==2.9.1",
     "bcrypt==3.2.0",
+    "PyJWT==2.1.0",
 ]
 
 here = path.abspath(path.dirname(__file__))

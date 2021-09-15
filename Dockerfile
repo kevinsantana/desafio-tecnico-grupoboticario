@@ -3,7 +3,7 @@ FROM centos/python-38-centos7
 USER root
 
 # ENVS
-ENV SECRET_KEY=$SECRET_KEY
+ENV JWT_SECRET=$JWT_SECRET
 
 # DEPENDENCIES
 RUN yum install -y \
