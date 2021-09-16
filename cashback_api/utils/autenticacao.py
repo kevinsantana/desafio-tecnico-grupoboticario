@@ -4,7 +4,6 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from cashback_api.utils.token import decode_token
 
 from cashback_api.excecoes import ErrorDetails
-from cashback_api.excecoes.autenticacao import MetodoAutenticacaoNaoSuportado
 from cashback_api.excecoes.token import (
     TokenInvalidoException,
     TokenNaoInformadoException,
@@ -20,17 +19,6 @@ class JWTBearer(HTTPBearer):
             JWTBearer, self
         ).__call__(request)
         if credenciais:
-            if not credenciais.scheme == "Bearer":
-                raise MetodoAutenticacaoNaoSuportado(
-                    status=403,
-                    error="Forbidden",
-                    message="Método de autenticação não suportado",
-                    error_details=[
-                        ErrorDetails(
-                            message="A API atualmente aceita o método de autenticação Bearer Token"
-                        ).to_dict()
-                    ],
-                )
             if not decode_token(credenciais.credentials):
                 raise TokenInvalidoException(
                     status=403,

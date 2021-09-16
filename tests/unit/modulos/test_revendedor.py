@@ -30,6 +30,6 @@ def test_inserir_revendedor_repetido(mock_inserir_revendedor):
         inserir(**Revendedor().__dict__)
 
 
-@pytest.mark.usefixtures("teardown_module")
-def test_tear_down():
-    pass
+# @pytest.mark.usefixtures("teardown_module")
+# def test_tear_down():
+#     pass

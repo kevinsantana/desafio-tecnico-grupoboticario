@@ -11,9 +11,14 @@ from cashback_api.excecoes.token import (
 )
 
 
-def encode_token(cpf: str):
+def encode_token(cpf: str, expira: int = None):
+    exp = (
+        datetime.utcnow() + timedelta(days=0, minutes=30)
+        if not expira
+        else datetime.utcnow() + timedelta(days=0, seconds=expira)
+    )
     payload = {
-        "exp": datetime.utcnow() + timedelta(days=0, minutes=30),
+        "exp": exp,
         "iat": datetime.utcnow(),
         "scope": "access_token",
         "sub": cpf,
@@ -23,19 +28,19 @@ def encode_token(cpf: str):
 
 def decode_token(token: str):
     try:
-        return jwt.decode(
+        decoded_token = jwt.decode(
             token,
             envs.JWT_SECRET,
             algorithms=[envs.JWT_ALGORITHM],
             options={"verify_signature": False},
         )
-    except jwt.ExpiredSignatureError:
-        raise TokenExpiradoException(
-            status=401,
-            error="Unauthorized",
-            message="Token expirado",
-            error_details=[ErrorDetails(message="O token está expirado").to_dict()],
-        )
+        if decoded_token["exp"] <= datetime.now().timestamp():
+            raise TokenExpiradoException(
+                status=401,
+                error="Unauthorized",
+                message="Token expirado",
+                error_details=[ErrorDetails(message="O token está expirado").to_dict()],
+            )
     except jwt.InvalidTokenError:
         raise TokenInvalidoException(
             status=401,
@@ -43,3 +48,4 @@ def decode_token(token: str):
             message="Token inválido",
             error_details=[ErrorDetails(message="O token é inválido").to_dict()],
         )
+    return decoded_token

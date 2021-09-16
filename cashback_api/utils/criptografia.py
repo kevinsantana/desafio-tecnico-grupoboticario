@@ -7,7 +7,7 @@ def hashear_senha(senha_b64: str) -> str:
     Devolve o hash da senha codificada em base64. A senha precisa estar codificada
     em base64.
 
-    :param str senha_b64: Senha codificada em baase64.
+    :param str senha_b64: Senha codificada em base64.
     :return: Hash da senha em base64.
     :rtype: str
     """
