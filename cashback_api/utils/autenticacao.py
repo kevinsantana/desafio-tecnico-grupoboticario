@@ -5,7 +5,10 @@ from cashback_api.utils.token import decode_token
 
 from cashback_api.excecoes import ErrorDetails
 from cashback_api.excecoes.autenticacao import MetodoAutenticacaoNaoSuportado
-from cashback_api.excecoes.token import TokenInvalidoException, TokenNaoInformadoException
+from cashback_api.excecoes.token import (
+    TokenInvalidoException,
+    TokenNaoInformadoException,
+)
 
 
 class JWTBearer(HTTPBearer):

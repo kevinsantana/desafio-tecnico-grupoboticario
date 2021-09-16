@@ -89,7 +89,7 @@ def load_exceptions(app: FastAPI):
             401: "Não autorizado",
             404: "Endereço não encontrado",
             405: "Método não permitido",
-            403: "Forbidden"
+            403: "Forbidden",
         }
         return JSONResponse(
             status_code=exception.status_code,

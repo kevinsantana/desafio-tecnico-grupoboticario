@@ -3,7 +3,7 @@ import functools
 from base64 import b64encode
 
 from cashback_api.excecoes import ErrorDetails
-from cashback_api.excecoes.revendedor import CashbackApiException
+from cashback_api.excecoes.revendedor import RevendedorJaExisteException
 
 from cashback_api.database.revendedor import Revendedor
 from cashback_api.utils.criptografia import hashear_senha
@@ -35,7 +35,7 @@ def inserir(*, nome: str, cpf: str, email: str, senha: str):
     de dados.
     """
     if Revendedor(cpf=cpf).existe():
-        raise CashbackApiException(
+        raise RevendedorJaExisteException(
             status=409,
             error="Conflict",
             message="Dados repetidos",

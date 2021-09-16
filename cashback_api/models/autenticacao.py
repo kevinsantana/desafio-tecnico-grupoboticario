@@ -46,13 +46,13 @@ LOGIN_DEFAULT_RESPONSES = parse_openapi(
             status=401,
             error="Unauthorized",
             message="Token expirado",
-            error_details=[ErrorDetails(message=f"O token está expirado").to_dict()],
+            error_details=[ErrorDetails(message="O token está expirado").to_dict()],
         ),
         Message(
             status=401,
             error="Unauthorized",
             message="Token inválido",
-            error_details=[ErrorDetails(message=f"O token é inválido").to_dict()],
+            error_details=[ErrorDetails(message="O token é inválido").to_dict()],
         ),
     ]
 )

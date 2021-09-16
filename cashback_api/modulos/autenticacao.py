@@ -21,7 +21,10 @@ def verificar_senha(*, cpf: str, senha: str):
                 ErrorDetails(message=f"O revendedor {cpf} não existe na base").to_dict()
             ],
         )
-    if verificar_hash(usuario.dict().get("senha"), b64encode(bytes(senha, encoding='utf-8')).decode("utf-8")):
+    if verificar_hash(
+        usuario.dict().get("senha"),
+        b64encode(bytes(senha, encoding="utf-8")).decode("utf-8"),
+    ):
         return True
     else:
         raise SenhaIncorretaException(
