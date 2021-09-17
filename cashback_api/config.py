@@ -36,6 +36,7 @@ class Envs(BaseSettings):
     SECRET_KEY: str = os.environ.get("SECRET_KEY", None)
     JWT_SECRET: str = os.environ.get("JWT_SECRET", None)
     JWT_ALGORITHM: str = os.environ.get("JWT_ALGORITHM", "HS256")
+    CPF_MASTER: str = "15350946056"
 
     class Config:
         case_sensitive = True

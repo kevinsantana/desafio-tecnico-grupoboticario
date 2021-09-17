@@ -26,10 +26,12 @@ CREATE TABLE IF NOT EXISTS public.CREDITO (
 -- -----------------------------------------------------
 -- Table public.COMPRA
 -- -----------------------------------------------------
+CREATE TYPE status_compra AS ENUM ('Em validação', 'Aprovado');
 CREATE TABLE IF NOT EXISTS public.COMPRA (
   CODIGO VARCHAR(45) PRIMARY KEY,
   VALOR DECIMAL(10, 2) NOT NULL,
-  DATA TIMESTAMP NOT NULL,
+  DATA DATE NOT NULL DEFAULT CURRENT_DATE,
+  STATUS_COMPRA status_compra,
   FK_REVENDEDOR_ID_REVENDEDOR INT NOT NULL,
   FK_CREDITO_ID_CREDITO INT NOT NULL,
   CONSTRAINT fk_COMPRA_REVENDEDOR

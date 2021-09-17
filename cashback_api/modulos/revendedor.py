@@ -3,7 +3,10 @@ import functools
 from base64 import b64encode
 
 from cashback_api.excecoes import ErrorDetails
-from cashback_api.excecoes.revendedor import RevendedorJaExisteException
+from cashback_api.excecoes.revendedor import (
+    RevendedorJaExisteException,
+    RevendedorNaoExisteException,
+)
 
 from cashback_api.database.revendedor import Revendedor
 from cashback_api.utils.criptografia import hashear_senha
@@ -52,19 +55,24 @@ def inserir(*, nome: str, cpf: str, email: str, senha: str):
     return True if insercao else False
 
 
-# @_limpa_cpf("cpf")
-# def listar_um(*, cpf: str):
-#     """
-#     Lista as informações de um usuário no banco de dados.
+@_limpa_cpf("cpf")
+def listar_um(*, cpf: str):
+    """
+    Lista as informações de um revendedor no banco de dados.
 
-#     :param str cpf: CPF do usuário buscado.
-#     :return: Informações do usuário buscado.
-#     :rtype: dict
-#     :raises UsuarioInexistenteException: Caso o usuário informado não exista no banco de dados.
-#     """
-#     if Usuario(cpf=cpf).existe():
-#         usuario = ListarUsuario(cpf=cpf).listar_um()
-#         usuario.data_nascimento = str(usuario.data_nascimento) if usuario.data_nascimento else usuario.data_nascimento
-#         return usuario.dict()
-#     else:
-#         raise UsuarioInexistenteException(404, cpf)
+    :param str cpf: CPF do revendedor buscado.
+    :return: Informações do revendedor buscado.
+    :rtype: dict
+    :raises RevendedorNaoExisteException: Caso o revendedor informado não exista no banco de dados.
+    """
+    if Revendedor(cpf=cpf).existe():
+        return Revendedor(cpf=cpf).buscar().dict()
+    else:
+        raise RevendedorNaoExisteException(
+            status=404,
+            error="Not found",
+            message="Revendedor não existe",
+            error_details=[
+                ErrorDetails(message=f"O revendedor {cpf} não existe").to_dict()
+            ],
+        )
