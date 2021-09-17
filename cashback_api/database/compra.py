@@ -108,3 +108,101 @@ class Compra(DataBase):
         self.query_string = "SELECT * FROM COMPRA WHERE COMPRA.CODIGO = %(codigo)s"
         compra = self.find_one()
         return Compra(**dict(compra)) if compra else None
+
+
+class ListarCompra(DataBase):
+    def __init__(
+        self,
+        codigo: str = None,
+        valor: float = None,
+        data: datetime = None,
+        porcentagem: float = None,
+        valor_cashback: int = None,
+        status_compra: StatusCompra = None,
+        cpf: str = None,
+    ):
+        self.__codigo = codigo
+        self.__valor = valor
+        self.__data = data
+        self.__porcentagem = porcentagem
+        self.__valor_cashback = valor_cashback
+        self.__status_compra = status_compra
+        self.__cpf = cpf
+
+    @property
+    def codigo(self):
+        return self.__codigo
+
+    @property
+    def valor(self):
+        return round(float(self.__valor), 2)
+
+    @property
+    def data(self):
+        return datetime.strftime(self.__data, "%Y-%M-%D")
+
+    @property
+    def porcentagem(self):
+        return self.__porcentagem
+
+    @property
+    def status_compra(self):
+        return self.__status_compra
+
+    @property
+    def valor_cashback(self):
+        return self.__valor_cashback
+
+    @valor_cashback.setter
+    def valor_cashback(self, valor_calculado: float):
+        if isinstance(valor_calculado, float):
+            self.__valor_cashback = round(valor_calculado, 2)
+
+    @property
+    def cpf(self):
+        return self.__cpf
+
+    def dict(self):
+        return {
+            key.replace("_ListarCompra__", ""): value
+            for key, value in self.__dict__.items()
+        }
+
+    @campos_obrigatorios(["cpf"])
+    def listar_todos_por_cpf(self, pagina: int, quantidade: int):
+        """
+        Lista as informações de compras associadas a um revendedor.
+
+        :param str cpf: CPF do revendedor associado a compra.
+        :return: Informações da compra.
+        :rtype: :class:`database.compra.ListarCompra` ou None
+        """
+        self.__offset = (pagina - 1) * quantidade
+        self.__quantidade = quantidade
+        self.query_string = """SELECT CODIGO, VALOR, DATA, PORCENTAGEM, STATUS_COMPRA, CPF
+                            FROM COMPRA
+                            JOIN REVENDEDOR ON REVENDEDOR.ID_REVENDEDOR = COMPRA.FK_REVENDEDOR_ID_REVENDEDOR
+                            JOIN CREDITO ON CREDITO.ID_CREDITO = COMPRA.FK_CREDITO_ID_CREDITO
+                            WHERE REVENDEDOR.CPF = %(cpf)s
+                            LIMIT %(quantidade)s OFFSET %(offset)s"""
+        compras, total = self.find_all(total=True)
+        return total, [ListarCompra(**dict(compra)) for compra in compras]
+
+    def listar_todos(self, pagina: int, quantidade: int):
+        """
+        Lista todas compras da base, paginando o resultado.
+
+        :param int pagina: Offset da página.
+        :param int quantidade: Quantidade de compras para listar.
+        :return: Compras da base.
+        :rtype: list
+        """
+        self.__offset = (pagina - 1) * quantidade
+        self.__quantidade = quantidade
+        self.query_string = """SELECT CODIGO, VALOR, DATA, PORCENTAGEM, STATUS_COMPRA
+                            FROM COMPRA
+                            JOIN REVENDEDOR ON REVENDEDOR.ID_REVENDEDOR = COMPRA.FK_REVENDEDOR_ID_REVENDEDOR
+                            JOIN CREDITO ON CREDITO.ID_CREDITO = COMPRA.FK_CREDITO_ID_CREDITO
+                            LIMIT %(quantidade)s OFFSET %(offset)s"""
+        compras, total = self.find_all(total=True)
+        return total, [ListarCompra(**dict(compra)) for compra in compras]

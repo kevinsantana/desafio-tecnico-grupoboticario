@@ -1,6 +1,7 @@
 from datetime import datetime, date
 
-from cashback_api.database.compra import Compra
+from cashback_api.database.compra import Compra, ListarCompra
+
 from cashback_api.modulos.revendedor import _limpa_cpf
 from cashback_api.modulos.revendedor import listar_um
 from cashback_api.modulos.credito import listar_um as lst_cashback
@@ -9,6 +10,17 @@ from cashback_api.excecoes import ErrorDetails
 from cashback_api.excecoes.credito import DataInvalidaException
 
 from cashback_api.config import envs
+
+from loguru import logger
+
+
+def _formatar_compras(compras: list):
+    data = []
+    for compra in compras:
+        compra.valor_cashback = compra.valor + (compra.valor * compra.porcentagem)
+        data.append(compra.dict())
+    logger.debug(data)
+    return data
 
 
 @_limpa_cpf("cpf")
@@ -40,3 +52,10 @@ def inserir(*, codigo: str, valor: float, data: datetime, cpf: str):
         fk_credito_id_credito=id_regra_cashbak.get("id_credito"),
     ).inserir()
     return True if insercao else False
+
+
+@_limpa_cpf("cpf")
+def listar_por_cpf(*, cpf: str, quantidade: int = 10, pagina: int = 0):
+    _ = listar_um(cpf=cpf)
+    total, compras = ListarCompra(cpf=cpf).listar_todos_por_cpf(pagina, quantidade)
+    return _formatar_compras(compras), total
