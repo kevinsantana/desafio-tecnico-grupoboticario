@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Query, Path, Request
+from fastapi import APIRouter, Body, Query, Request
 
 from cashback_api.rotas.v1 import paginacao
 
@@ -8,7 +8,6 @@ from cashback_api.models.compra import (
     CriarCompraResponse,
     CRIAR_COMPRA_DEFAULT_RESPONSES,
 )
-
 
 router = APIRouter()
 
@@ -31,8 +30,8 @@ def criar(
     return {"data": cpr.inserir(**compra.dict())}
 
 
-@router.post(
-    "/cpf",
+@router.get(
+    "/listar/cpf",
     status_code=200,
     summary="Listar compras de um revendedor",
     # response_model=CriarCompraResponse,
@@ -51,7 +50,26 @@ def listar_cpf(
     pagina: int = Query(1, description="Página atual de retorno", gt=0)
 ):
     """
-    Enpoint para criar um nova compra.
+    Listar as compras a partir de um cpf de revendedor.
     """
     compras, total = cpr.listar_por_cpf(cpf=cpf, quantidade=quantidade, pagina=pagina)
+    return paginacao(compras, quantidade, pagina, total, str(request.url))
+
+
+@router.get(
+    "/listar/",
+    status_code=200,
+    summary="Listar as compras da base",
+    # response_model=CriarCompraResponse,
+    # responses=CRIAR_COMPRA_DEFAULT_RESPONSES,
+)
+def list_all(
+    request: Request,
+    quantidade: int = Query(10, description="Quantidade de registros de retorno", gt=0),
+    pagina: int = Query(1, description="Página atual de retorno", gt=0)
+):
+    """
+    Enpoint para listar as compras da base.
+    """
+    compras, total = cpr.listar(quantidade=quantidade, pagina=pagina)
     return paginacao(compras, quantidade, pagina, total, str(request.url))

@@ -11,15 +11,12 @@ from cashback_api.excecoes.credito import DataInvalidaException
 
 from cashback_api.config import envs
 
-from loguru import logger
-
 
 def _formatar_compras(compras: list):
     data = []
     for compra in compras:
         compra.valor_cashback = compra.valor + (compra.valor * compra.porcentagem)
         data.append(compra.dict())
-    logger.debug(data)
     return data
 
 
@@ -58,4 +55,9 @@ def inserir(*, codigo: str, valor: float, data: datetime, cpf: str):
 def listar_por_cpf(*, cpf: str, quantidade: int = 10, pagina: int = 0):
     _ = listar_um(cpf=cpf)
     total, compras = ListarCompra(cpf=cpf).listar_todos_por_cpf(pagina, quantidade)
+    return _formatar_compras(compras), total
+
+
+def listar(*, quantidade: int = 10, pagina: int = 0):
+    total, compras = ListarCompra().listar_todos(pagina, quantidade)
     return _formatar_compras(compras), total

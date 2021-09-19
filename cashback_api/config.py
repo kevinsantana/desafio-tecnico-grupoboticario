@@ -37,6 +37,7 @@ class Envs(BaseSettings):
     JWT_SECRET: str = os.environ.get("JWT_SECRET", None)
     JWT_ALGORITHM: str = os.environ.get("JWT_ALGORITHM", "HS256")
     CPF_MASTER: str = "15350946056"
+    ACUMULADO_CASHBACK: str = "https://mdaqk8ek5j.execute-api.us-east-1.amazonaws.com"
 
     class Config:
         case_sensitive = True

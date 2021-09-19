@@ -60,7 +60,6 @@ class Revendedor(DataBase):
         values (%(nome)s, %(cpf)s, %(email)s, %(senha)s)"""
         return True if self.insert() else False
 
-    @campos_obrigatorios(["cpf"])
     def existe(self):
         """
         Verifica se um revendedor existe no banco de dados.
@@ -70,14 +69,12 @@ class Revendedor(DataBase):
         :return: True se a operação for exeutada com sucesso, False caso contrário.
         :rtype: bool
         """
-        self.query_string = (
-            "SELECT COUNT(*) FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
-        )
+        if self.__cpf:
+            self.query_string = "SELECT COUNT(*) FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
         if self.__id_revendedor:
-            self.query_string += " OR REVENDEDOR.ID_REVENDEDOR = %(id_revendedor)s"
+            self.query_string = "SELECT COUNT(*) FROM REVENDEDOR WHERE REVENDEDOR.ID_REVENDEDOR = %(id_revendedor)s"
         return True if self.find_one()[0] else False
 
-    @campos_obrigatorios(["cpf"])
     def buscar(self):
         """
         Busca revendedor no banco de dados a partir do cpf ou id do revendedor.
@@ -86,8 +83,9 @@ class Revendedor(DataBase):
         :return: Revendedor
         :rtype: :class:`database.revendedor.Revendedor` ou None
         """
-        self.query_string = "SELECT * FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
+        if self.__cpf:
+            self.query_string = "SELECT * FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
         if self.__id_revendedor:
-            self.query_string += " OR REVENDEDOR.ID_REVENDEDOR = %(id_revendedor)s"
+            self.query_string = "SELECT * FROM REVENDEDOR WHERE REVENDEDOR.ID_REVENDEDOR = %(id_revendedor)s"
         revendedor = self.find_one()
         return Revendedor(**dict(revendedor)) if revendedor else None

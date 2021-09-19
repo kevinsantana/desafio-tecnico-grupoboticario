@@ -190,7 +190,7 @@ class ListarCompra(DataBase):
 
     def listar_todos(self, pagina: int, quantidade: int):
         """
-        Lista todas compras da base, paginando o resultado.
+        Lista todas as compras da base, paginando o resultado.
 
         :param int pagina: Offset da página.
         :param int quantidade: Quantidade de compras para listar.
@@ -199,7 +199,7 @@ class ListarCompra(DataBase):
         """
         self.__offset = (pagina - 1) * quantidade
         self.__quantidade = quantidade
-        self.query_string = """SELECT CODIGO, VALOR, DATA, PORCENTAGEM, STATUS_COMPRA
+        self.query_string = """SELECT CODIGO, VALOR, DATA, PORCENTAGEM, STATUS_COMPRA, CPF
                             FROM COMPRA
                             JOIN REVENDEDOR ON REVENDEDOR.ID_REVENDEDOR = COMPRA.FK_REVENDEDOR_ID_REVENDEDOR
                             JOIN CREDITO ON CREDITO.ID_CREDITO = COMPRA.FK_CREDITO_ID_CREDITO

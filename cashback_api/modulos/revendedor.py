@@ -16,7 +16,8 @@ def _limpa_cpf(cpf):
     def decorator_limpa_cpf(func):
         @functools.wraps(func)
         def wrapper_limpa_cpf(*args, **kwargs):
-            kwargs["cpf"] = re.sub("[^0-9]", "", kwargs["cpf"])
+            if kwargs.get("cpf"):
+                kwargs["cpf"] = re.sub("[^0-9]", "", kwargs["cpf"])
             return func(*args, **kwargs)
 
         return wrapper_limpa_cpf
@@ -56,23 +57,22 @@ def inserir(*, nome: str, cpf: str, email: str, senha: str):
 
 
 @_limpa_cpf("cpf")
-def listar_um(*, cpf: str):
+def listar_um(*, cpf: str = None, id_revendedor: int = None):
     """
     Lista as informações de um revendedor no banco de dados.
 
     :param str cpf: CPF do revendedor buscado.
+    :param int id_revendedor: Id do revendedor.
     :return: Informações do revendedor buscado.
     :rtype: dict
     :raises RevendedorNaoExisteException: Caso o revendedor informado não exista no banco de dados.
     """
-    if Revendedor(cpf=cpf).existe():
-        return Revendedor(cpf=cpf).buscar().dict()
+    if Revendedor(cpf=cpf, id_revendedor=id_revendedor).existe():
+        return Revendedor(cpf=cpf, id_revendedor=id_revendedor).buscar().dict()
     else:
         raise RevendedorNaoExisteException(
             status=404,
             error="Not found",
             message="Revendedor não existe",
-            error_details=[
-                ErrorDetails(message=f"O revendedor {cpf} não existe").to_dict()
-            ],
+            error_details=[ErrorDetails(message="O revendedor não existe").to_dict()],
         )

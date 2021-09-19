@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from cashback_api.rotas.v1 import compra
+from cashback_api.rotas.v1 import cashback
 from cashback_api.rotas.v1 import revendedor
 from cashback_api.rotas.v1 import autenticacao
 
@@ -13,7 +14,7 @@ DEPENDENCIAS = [Depends(JWTBearer())]
 v1.include_router(
     revendedor.router,
     prefix="/revendedor",
-    dependencies=DEPENDENCIAS,
+    # dependencies=DEPENDENCIAS,
     tags=["revendedor"],
 )
 
@@ -24,4 +25,11 @@ v1.include_router(
     prefix="/compras",
     dependencies=DEPENDENCIAS,
     tags=["compras"],
+)
+
+v1.include_router(
+    cashback.router,
+    prefix="/cashback",
+    dependencies=DEPENDENCIAS,
+    tags=["cashback"],
 )
