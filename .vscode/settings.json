@@ -1,0 +1,5 @@
+{
+    "python.linting.enabled": true,
+    "python.linting.pylamaEnabled": true,
+    "restructuredtext.confPath": "${workspaceFolder}/cashback-api/docs"
+}
