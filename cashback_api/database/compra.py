@@ -168,6 +168,20 @@ class ListarCompra(DataBase):
             for key, value in self.__dict__.items()
         }
 
+    @campos_obrigatorios(["codigo"])
+    def existe(self):
+        """
+        Verifica se já existe uma compra no banco de dados com o código informado.
+
+        :param str codigo: Código da compra
+        :return: True se a operação for exeutada com sucesso, False caso contrário.
+        :rtype: bool
+        """
+        self.query_string = (
+            """SELECT COUNT(*) FROM COMPRA WHERE COMPRA.CODIGO = %(codigo)s"""
+        )
+        return True if self.find_one()[0] else False
+
     @campos_obrigatorios(["cpf"])
     def listar_todos_por_cpf(self, pagina: int, quantidade: int):
         """

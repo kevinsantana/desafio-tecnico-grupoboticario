@@ -47,7 +47,7 @@ def listar_cpf(
         regex=r"\d",
     ),
     quantidade: int = Query(10, description="Quantidade de registros de retorno", gt=0),
-    pagina: int = Query(1, description="Página atual de retorno", gt=0)
+    pagina: int = Query(1, description="Página atual de retorno", gt=0),
 ):
     """
     Listar as compras a partir de um cpf de revendedor.
@@ -66,7 +66,7 @@ def listar_cpf(
 def list_all(
     request: Request,
     quantidade: int = Query(10, description="Quantidade de registros de retorno", gt=0),
-    pagina: int = Query(1, description="Página atual de retorno", gt=0)
+    pagina: int = Query(1, description="Página atual de retorno", gt=0),
 ):
     """
     Enpoint para listar as compras da base.

@@ -47,6 +47,16 @@ CRIAR_COMPRA_DEFAULT_RESPONSES = parse_openapi(
             ],
         ),
         Message(
+            status=409,
+            error="Conflict",
+            message="Dado repetido",
+            error_details=[
+                ErrorDetails(
+                    message="Os dados informados para a compra já existem na base"
+                ).to_dict()
+            ],
+        ),
+        Message(
             status=404,
             error="Not found",
             message="Revendedor não existe",

@@ -11,6 +11,18 @@ from cashback_api.excecoes.revendedor import RevendedorNaoExisteException
 
 @_limpa_cpf("cpf")
 def verificar_senha(*, cpf: str, senha: str):
+    """
+    Verifica se a senha fornecida é igual aquela armazenada no banco de dados.
+
+    :param str cpf: CPF do revendedor.
+    :param str senha: Senha do revendedor.
+    :raises RevendedorNaoExisteException: Se o cpf informado não pertencer a nenhum
+        revendedor.
+    :raises SenhaIncorretaException: Caso a senha informada não seja a mesma que aquela
+        armazenada no banco de dados.
+    :return: Se a senha está correta ou não:
+    :rtype: bool
+    """
     usuario = Revendedor(cpf=cpf).buscar()
     if not usuario:
         raise RevendedorNaoExisteException(

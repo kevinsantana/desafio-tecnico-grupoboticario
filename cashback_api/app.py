@@ -27,9 +27,11 @@ from docs import (
 
 urllib3.disable_warnings()
 
+logger.add("cashback_api.log", rotation="500 MB")
+
 logger.level("REQUEST RECEBIDA", no=38, color="<yellow>")
 logger.level("REQUEST FINALIZADA", no=39, color="<yellow>")
-logger.level("EXCEPTION", no=38, color="<yellow>")
+logger.level("EXCEPTION", no=38, color="<red>")
 
 
 def include_router(app: FastAPI):
@@ -138,7 +140,6 @@ def start_application():
         description=open(html_desc).read(),
         version=__version__,
         docs_url="/v1/swagger",
-        # redoc_url="/v1/docs",
     )
     include_router(app)
     configure_static(app)

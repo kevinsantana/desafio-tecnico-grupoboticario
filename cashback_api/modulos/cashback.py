@@ -11,6 +11,16 @@ from loguru import logger
 
 
 def recuperar_cashback(id_revendedor: int):
+    """
+    Acessa a API externa para recuperar o acumulado de cashback para um determinado
+    revendedor.
+
+    :param int id_revendedor: Id do revendedor que se deseja recuperar o cashback.
+    :raises FalhaNaConsultaDoCashback: Caso a api esteja fora do ar.
+    :raises FalhaNaConsultaDoCashback: Se não for possível se conectar com a api.
+    :return: Cashback acumulado para o cpf informado.
+    :rtype: int
+    """
     info_revendedor = listar_um(id_revendedor=id_revendedor)
     url_cashback = (
         f"{envs.ACUMULADO_CASHBACK}/v1/cashback?cpf={info_revendedor.get('cpf')}"
@@ -34,12 +44,10 @@ def recuperar_cashback(id_revendedor: int):
     except ConnectionError as error:
         logger.error(f"Falha de conexão com o serviço externo: {error}")
         raise FalhaNaConsultaDoCashback(
-                status=500,
-                error="Internal Server Error",
-                message="Não é possível consultar o saldo",
-                error_details=[
-                    ErrorDetails(
-                        message="Tente acessar o serviço mais tarde"
-                    ).to_dict()
-                ],
-            )
+            status=500,
+            error="Internal Server Error",
+            message="Não é possível consultar o saldo",
+            error_details=[
+                ErrorDetails(message="Tente acessar o serviço mais tarde").to_dict()
+            ],
+        )

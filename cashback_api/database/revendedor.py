@@ -70,7 +70,9 @@ class Revendedor(DataBase):
         :rtype: bool
         """
         if self.__cpf:
-            self.query_string = "SELECT COUNT(*) FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
+            self.query_string = (
+                "SELECT COUNT(*) FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
+            )
         if self.__id_revendedor:
             self.query_string = "SELECT COUNT(*) FROM REVENDEDOR WHERE REVENDEDOR.ID_REVENDEDOR = %(id_revendedor)s"
         return True if self.find_one()[0] else False
@@ -84,7 +86,9 @@ class Revendedor(DataBase):
         :rtype: :class:`database.revendedor.Revendedor` ou None
         """
         if self.__cpf:
-            self.query_string = "SELECT * FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
+            self.query_string = (
+                "SELECT * FROM REVENDEDOR WHERE REVENDEDOR.CPF = %(cpf)s"
+            )
         if self.__id_revendedor:
             self.query_string = "SELECT * FROM REVENDEDOR WHERE REVENDEDOR.ID_REVENDEDOR = %(id_revendedor)s"
         revendedor = self.find_one()
