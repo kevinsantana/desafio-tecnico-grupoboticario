@@ -141,3 +141,4 @@ Todos os direitos são reservados ao autor Kevin de Santana Araujo.
 ## Outras informações
 
 * Caso tenha alguma dúvida em relação ao projeto, ou queira contribuir com sugestões ou críticas, abra uma [issue]() ou procure o desenvolvedor através do email kevin_santana.araujo@hotmail.com
+
